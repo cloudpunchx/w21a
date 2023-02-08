@@ -25,7 +25,7 @@ def post_item():
     """
     required_data = ['name', 'description', 'quantity']
     check_result = check_data(request.json, required_data)
-    if check_data == None:
+    if check_result != None:
         return check_result
     name = request.json.get('name')
     description = request.json.get('description')
@@ -37,18 +37,19 @@ def post_item():
         else:
             return "Creation unsuccessful for item."
 
+# PATCH items
 @app.patch('/api/item')
 def patch_item():
     """
     Expected field:
     item id, quantity
     """
-    id = request.json.get('id')
-    quantity = request.json.get('quantity')
     required_data = ['id', 'quantity']
     check_result = check_data(request.json, required_data)
-    if check_data == None:
+    if check_result != None:
         return check_result
+    id = request.json.get('id')
+    quantity = request.json.get('quantity')
     result = run_statement("CALL update_quantity(?,?)", [id, quantity])
     if (type(result) == list):
         if result[0][0] == 1:
@@ -64,7 +65,7 @@ def delete_item():
     Item Id
     """
     check_result = check_data(request.json, ['itemId'])
-    if check_data == None:
+    if check_result != None:
         return check_result
     item_id = request.json.get('itemId')
     if item_id == None:
@@ -86,7 +87,7 @@ def get_employees():
     employee id
     """
     check_result = check_data(request.json, ['id'])
-    if check_data == None:
+    if check_result != None:
         return check_result
     employee_id = request.json.get('id')
     result = run_statement("CALL get_employees(?)", [employee_id])
@@ -95,6 +96,65 @@ def get_employees():
     else: 
         return "An error has occurred."
 
+# POST employees
+@app.post('/api/employee')
+def post_employee():
+    """
+    Expects the fields:
+    name, hourly wage
+    """
+    required_data = ['name', 'hourlyWage']
+    check_result = check_data(request.json, required_data)
+    if check_result != None:
+        return check_result
+    name = request.json.get('name')
+    hourly_wage = request.json.get('hourlyWage')
+    result = run_statement("CALL post_employee(?,?)", [name, hourly_wage])
+    if (type(result) == list):
+        if result[0][0] == 1:
+            return "Successfully added Employee."
+        else:
+            return "An error has occurred, Employee not added."
+
+# PATCH employees
+@app.patch('/api/employee')
+def patch_employee():
+    """
+    Expected field:
+    employee id, hourly wage
+    """
+    required_data = ['id', 'hourlyWage']
+    check_result = check_data(request.json, required_data)
+    if check_result != None:
+        return check_result
+    id = request.json.get('id')
+    hourly_wage = request.json.get('hourlyWage')
+    result = run_statement("CALL patch_employee(?,?)", [id, hourly_wage])
+    if (type(result) == list):
+        if result[0][0] == 1:
+            return f"Successfully updated Employee {id}."
+        else:
+            return f"Update unsuccessful for Employee {id}, check ID."
+
+# DELETE employees
+@app.delete('/api/employee')
+def delete_employee():
+    """
+    Expected field:
+    Item Id
+    """
+    check_result = check_data(request.json, ['id'])
+    if check_result != None:
+        return check_result
+    id = request.json.get('id')
+    if id == None:
+        return "You have to specify an Employee ID."
+    result = run_statement("CALL delete_employee(?)", [id])
+    if (type(result) == list):
+        if result[0][0] == 1:
+            return f"Successfully deleted Employee {id}."
+        else:
+            return f"Delete unsuccessful for Employee {id}, check ID."
 
 
 app.run(debug = True)
