@@ -5,6 +5,8 @@ from helpers import check_data
 
 app = Flask(__name__)
 
+# ITEM SECTION:
+
 # GET items
 @app.get('/api/item')
 def get_items():
@@ -73,5 +75,41 @@ def delete_item():
             return f"Successfully deleted item {item_id}."
         else:
             return f"Delete unsuccessful for item {item_id}, check Item ID."
+
+# EMPLOYEE SECTION :
+
+# GET employee by ID
+# @app.get('/api/employee')
+# def get_employees():
+#     """
+#     Expected field:
+#     employee id
+#     """
+#     check_result = check_data(request.json, ['id'])
+#     if check_data == None:
+#         return check_result
+#     employee_id = request.json.get('id')
+#     result = run_statement("CALL get_employees(?)", [employee_id])
+#     if (type(result) == list):
+#         return json.dumps(result, default=str)
+#     else: 
+#         return "Sorry, something went wrong."
+
+@app.get('/api/employee')
+def get_employees():
+    """
+    Expected field:
+    employee id
+    """
+    check_result = check_data(request.json, ['id'])
+    if check_data == None:
+        return check_result
+    employee_id = request.json.get('id')
+    result = run_statement("CALL get_employees(?)", [employee_id])
+    if (type(result) == list):
+            return json.dumps(result, default=str)
+    else: 
+        return "An error has occurred."
+
 
 app.run(debug = True)
