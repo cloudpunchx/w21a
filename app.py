@@ -79,22 +79,6 @@ def delete_item():
 # EMPLOYEE SECTION :
 
 # GET employee by ID
-# @app.get('/api/employee')
-# def get_employees():
-#     """
-#     Expected field:
-#     employee id
-#     """
-#     check_result = check_data(request.json, ['id'])
-#     if check_data == None:
-#         return check_result
-#     employee_id = request.json.get('id')
-#     result = run_statement("CALL get_employees(?)", [employee_id])
-#     if (type(result) == list):
-#         return json.dumps(result, default=str)
-#     else: 
-#         return "Sorry, something went wrong."
-
 @app.get('/api/employee')
 def get_employees():
     """
@@ -110,6 +94,7 @@ def get_employees():
             return json.dumps(result, default=str)
     else: 
         return "An error has occurred."
+
 
 
 app.run(debug = True)
