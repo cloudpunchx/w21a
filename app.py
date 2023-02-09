@@ -8,9 +8,11 @@ app = Flask(__name__)
 # ITEM SECTION:
 
 # GET items
+# Included: bonus 1. Optional Limit Parameter, Bonus 2. returns the limited items based on highest quantity
 @app.get('/api/item')
 def get_items():
-    result = run_statement("CALL get_items()")
+    item_limit = request.args.get('item_limit')
+    result = run_statement("CALL get_items(?)", [item_limit])
     if (type(result) == list):
         return json.dumps(result, default=str)
     else: 
@@ -38,6 +40,7 @@ def post_item():
             return "Creation unsuccessful for item."
 
 # PATCH items
+# Included: bonus 3. change patch item to accept optional data for name, description
 @app.patch('/api/item')
 def patch_item():
     """
@@ -49,8 +52,10 @@ def patch_item():
     if check_result != None:
         return check_result
     id = request.json.get('id')
+    name = request.json.get('name')
+    description = request.json.get('description')
     quantity = request.json.get('quantity')
-    result = run_statement("CALL update_quantity(?,?)", [id, quantity])
+    result = run_statement("CALL update_quantity(?,?,?,?)", [id, name, description, quantity])
     if (type(result) == list):
         if result[0][0] == 1:
             return f"Successfully updated item {id}."
